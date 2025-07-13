@@ -8,7 +8,7 @@ const isPalindrome = (str) => {
 const extractNumber = (input) => {
   const str = String(input); // Преобразует входное значение в строку
   const digits = str.replace(/\D/g, ''); // Удаляет всё, кроме цифр
-  return digits ? parseInt(digits, 10) : NaN; // Возвращает число или NaN
+  return parseInt(digits, 10); // Возвращает число или NaN
 };
 
 export { checkStringLength, isPalindrome, extractNumber };
