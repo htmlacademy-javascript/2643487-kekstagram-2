@@ -60,7 +60,7 @@ const generateComment = (commentIdGenerator) => () => ({
   name: getRandomArrayItem(NAMES)
 });
 
-// Генерация фотографии
+// Генерация объекта фотографии
 const generatePhoto = (photoIdGenerator, commentIdGenerator) => () => {
   const photoId = photoIdGenerator();
 
