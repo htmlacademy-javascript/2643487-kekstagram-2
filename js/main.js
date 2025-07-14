@@ -1,4 +1,4 @@
-import { createPhotosArray } from './mockGenerator.js';
+import { createPhotosArray } from './mock-generator.js';
 
 window.console.log(createPhotosArray());
 

@@ -34,23 +34,29 @@ const NAMES = [
   'Анна', 'Сергей', 'Елена', 'Артём', 'Наталья'
 ];
 
-const PHOTOS_COUNT = 25;
-const COMMENTS_COUNT = 30;
-const AVATARS_RANGE = {
+const PHOTOS_COUNT = 25; // Количество объектов фотографий для генерации
+const COMMENTS_COUNT = 30; //Количество комментариев для генерации
+
+const AVATARS_RANGE = { //Диапазон id аватарок
   MIN: 1,
   MAX: 6
 };
 
-const LIKES_RANGE = {
+const LIKES_RANGE = { //Диапазон количества лайков к фотографии
   MIN: 5,
   MAX: 200
+};
+
+const DESCRIPTIONS_RANGE = { //Диапазон количества предложений в тексте комментария
+  MIN: 1,
+  MAX: 2
 };
 
 // Генерация комментария
 const generateComment = (commentIdGenerator) => () => ({
   id: commentIdGenerator(),
   avatar: `img/avatar-${getRandomInteger(AVATARS_RANGE.MIN, AVATARS_RANGE.MAX)}.svg`,
-  message: Array.from({ length: getRandomInteger(1, 2) }, () => getRandomArrayItem(MESSAGES)).join(' '),
+  message: Array.from({ length: getRandomInteger(DESCRIPTIONS_RANGE.MIN, DESCRIPTIONS_RANGE.MAX) }, () => getRandomArrayItem(MESSAGES)).join(' '),
   name: getRandomArrayItem(NAMES)
 });
 
