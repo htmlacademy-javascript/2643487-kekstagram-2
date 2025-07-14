@@ -34,10 +34,22 @@ const NAMES = [
   'Анна', 'Сергей', 'Елена', 'Артём', 'Наталья'
 ];
 
+const PHOTOS_COUNT = 25;
+const COMMENTS_COUNT = 30;
+const AVATARS_RANGE = {
+  MIN: 1,
+  MAX: 6
+};
+
+const LIKES_RANGE = {
+  MIN: 5,
+  MAX: 200
+};
+
 // Генерация комментария
 const generateComment = (commentIdGenerator) => () => ({
   id: commentIdGenerator(),
-  avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
+  avatar: `img/avatar-${getRandomInteger(AVATARS_RANGE.MIN, AVATARS_RANGE.MAX)}.svg`,
   message: Array.from({ length: getRandomInteger(1, 2) }, () => getRandomArrayItem(MESSAGES)).join(' '),
   name: getRandomArrayItem(NAMES)
 });
@@ -50,9 +62,9 @@ const generatePhoto = (photoIdGenerator, commentIdGenerator) => () => {
     id: photoId,
     url: `photos/${photoId}.jpg`,
     description: getRandomArrayItem(DESCRIPTIONS),
-    likes: getRandomInteger(15, 200),
+    likes: getRandomInteger(LIKES_RANGE.MIN, LIKES_RANGE.MAX),
     comments: Array.from(
-      { length: getRandomInteger(0, 30) },
+      { length: getRandomInteger(0, COMMENTS_COUNT) },
       generateComment(commentIdGenerator)
     )
   };
@@ -64,7 +76,7 @@ const createPhotosArray = () => {
   const generateCommentId = generateUniqueId();
 
   return Array.from(
-    { length: 25 },
+    { length: PHOTOS_COUNT },
     generatePhoto(generatePhotoId, generateCommentId)
   );
 };
