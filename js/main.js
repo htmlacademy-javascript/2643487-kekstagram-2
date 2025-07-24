@@ -1,5 +1,6 @@
 import { createPhotosArray } from './mock-generator.js';
-import { renderThumbnails } from './render-thumbnails.js';
+import { initGallery } from './init-gallery.js';
+// import { renderThumbnails } from './render-thumbnails.js';
 
-renderThumbnails(createPhotosArray());
+initGallery(createPhotosArray());
 
