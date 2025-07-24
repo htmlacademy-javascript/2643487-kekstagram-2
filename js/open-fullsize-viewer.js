@@ -42,23 +42,29 @@ const openFullsizeViewer = (photoData) => {
   commentsCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
 
+  closeButton.addEventListener('click', handleCloseClick);
+  document.addEventListener('keydown', handleKeyDown);
+
   bigPictureSection.classList.remove('hidden');
   body.classList.add('modal-open');
 };
 
 const closeFullsizeViewer = () => {
+  closeButton.removeEventListener('click', handleCloseClick);
+  document.removeEventListener('keydown', handleKeyDown);
+
   bigPictureSection.classList.add('hidden');
   body.classList.remove('modal-open');
 };
 
-const onDocumentKeydown = (evt) => {
+function handleCloseClick() {
+  closeFullsizeViewer();
+}
+
+function handleKeyDown(evt) {
   if (evt.key === 'Escape') {
-    evt.preventDefault();
     closeFullsizeViewer();
   }
-};
-
-closeButton.addEventListener('click', closeFullsizeViewer);
-document.addEventListener('keydown', onDocumentKeydown);
+}
 
 export { openFullsizeViewer };
