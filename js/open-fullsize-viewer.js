@@ -10,22 +10,22 @@ const commentsLoader = bigPictureSection.querySelector('.comments-loader');
 const socialCaption = bigPictureSection.querySelector('.social__caption');
 const commentsList = bigPictureSection.querySelector('.social__comments');
 
-const createCommentElement = ({ avatar, name, message }) => {
-  const commentElement = document.createElement('li');
-  commentElement.classList.add('social__comment');
+const createComment = ({ avatar, name, message }) => {
+  const comment = document.createElement('li');
+  comment.classList.add('social__comment');
 
-  commentElement.innerHTML = `
+  comment.innerHTML = `
     <img class="social__picture" src="${avatar}" alt="${name}" width="35" height="35">
     <p class="social__text">${message}</p>
   `;
 
-  return commentElement;
+  return comment;
 };
 
 const renderComments = (comments) => {
   commentsList.innerHTML = '';
   comments.forEach((comment) => {
-    commentsList.appendChild(createCommentElement(comment));
+    commentsList.appendChild(createComment(comment));
   });
 };
 
@@ -42,26 +42,26 @@ const openFullsizeViewer = (photoData) => {
   commentsCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
 
-  closeButton.addEventListener('click', handleCloseClick);
-  document.addEventListener('keydown', handleKeyDown);
+  closeButton.addEventListener('click', closeButtonClickHandler);
+  document.addEventListener('keydown', documentKeyDownHandler);
 
   bigPictureSection.classList.remove('hidden');
   body.classList.add('modal-open');
 };
 
 const closeFullsizeViewer = () => {
-  closeButton.removeEventListener('click', handleCloseClick);
-  document.removeEventListener('keydown', handleKeyDown);
+  closeButton.removeEventListener('click', closeButtonClickHandler);
+  document.removeEventListener('keydown', documentKeyDownHandler);
 
   bigPictureSection.classList.add('hidden');
   body.classList.remove('modal-open');
 };
 
-function handleCloseClick() {
+function closeButtonClickHandler() {
   closeFullsizeViewer();
 }
 
-function handleKeyDown(evt) {
+function documentKeyDownHandler(evt) {
   if (evt.key === 'Escape') {
     closeFullsizeViewer();
   }
