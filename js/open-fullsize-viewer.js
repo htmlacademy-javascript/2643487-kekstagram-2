@@ -10,58 +10,84 @@ const commentsLoader = bigPictureSection.querySelector('.comments-loader');
 const socialCaption = bigPictureSection.querySelector('.social__caption');
 const commentsList = bigPictureSection.querySelector('.social__comments');
 
-const createCommentElement = ({ avatar, name, message }) => {
-  const commentElement = document.createElement('li');
-  commentElement.classList.add('social__comment');
+const COMMENTS_PER_LOAD = 5; //Количество комментариев для одной загрузки
+let currentComments = []; //Хранит все комментарии текущего фото
+let displayedCommentsCount = 0; //Cчетчик показанных комментариев
 
-  commentElement.innerHTML = `
+const createComment = ({ avatar, name, message }) => {
+  const comment = document.createElement('li');
+  comment.classList.add('social__comment');
+
+  comment.innerHTML = `
     <img class="social__picture" src="${avatar}" alt="${name}" width="35" height="35">
     <p class="social__text">${message}</p>
   `;
 
-  return commentElement;
+  return comment;
 };
 
 const renderComments = (comments) => {
-  commentsList.innerHTML = '';
+  const fragment = document.createDocumentFragment();
   comments.forEach((comment) => {
-    commentsList.appendChild(createCommentElement(comment));
+    fragment.appendChild(createComment(comment));
   });
+  commentsList.appendChild(fragment);
+
+  // Обновляем счетчики
+  displayedCommentsCount += comments.length;
+  commentsShownCount.textContent = displayedCommentsCount;
+  commentsTotalCount.textContent = currentComments.length;
+
+  // Скрываем кнопку, если все комментарии показаны
+  commentsLoader.classList.toggle('hidden', displayedCommentsCount >= currentComments.length);
+};
+
+const commentsLoaderHandler = () => {
+  const nextComments = currentComments.slice(displayedCommentsCount, displayedCommentsCount + COMMENTS_PER_LOAD);
+  renderComments(nextComments);
 };
 
 const openFullsizeViewer = (photoData) => {
   bigPictureImg.src = photoData.url;
   bigPictureImg.alt = photoData.description;
   likesCount.textContent = photoData.likes;
-  commentsTotalCount.textContent = photoData.comments.length;
-  commentsShownCount.textContent = photoData.comments.length;
   socialCaption.textContent = photoData.description;
 
-  renderComments(photoData.comments);
+  // Инициализация комментариев
+  currentComments = photoData.comments;
+  displayedCommentsCount = 0;
+  commentsList.innerHTML = '';
 
-  commentsCount.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
+  // Показываем элементы управления комментариями
+  commentsCount.classList.remove('hidden');
+  commentsLoader.classList.remove('hidden');
 
-  closeButton.addEventListener('click', handleCloseClick);
-  document.addEventListener('keydown', handleKeyDown);
+  // Загружаем первую порцию комментариев
+  commentsLoaderHandler();
+
+  // Назначаем обработчики
+  closeButton.addEventListener('click', closeButtonClickHandler);
+  document.addEventListener('keydown', documentKeyDownHandler);
+  commentsLoader.addEventListener('click', commentsLoaderHandler);
 
   bigPictureSection.classList.remove('hidden');
   body.classList.add('modal-open');
 };
 
 const closeFullsizeViewer = () => {
-  closeButton.removeEventListener('click', handleCloseClick);
-  document.removeEventListener('keydown', handleKeyDown);
+  closeButton.removeEventListener('click', closeButtonClickHandler);
+  document.removeEventListener('keydown', documentKeyDownHandler);
+  commentsLoader.removeEventListener('click', commentsLoaderHandler);
 
   bigPictureSection.classList.add('hidden');
   body.classList.remove('modal-open');
 };
 
-function handleCloseClick() {
+function closeButtonClickHandler() {
   closeFullsizeViewer();
 }
 
-function handleKeyDown(evt) {
+function documentKeyDownHandler(evt) {
   if (evt.key === 'Escape') {
     closeFullsizeViewer();
   }
