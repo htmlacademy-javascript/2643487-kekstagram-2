@@ -1,3 +1,5 @@
+const COMMENTS_PER_LOAD = 5; //Количество комментариев для одной загрузки
+
 const body = document.body;
 const bigPictureSection = document.querySelector('.big-picture');
 const closeButton = bigPictureSection.querySelector('.big-picture__cancel');
@@ -10,7 +12,6 @@ const commentsLoader = bigPictureSection.querySelector('.comments-loader');
 const socialCaption = bigPictureSection.querySelector('.social__caption');
 const commentsList = bigPictureSection.querySelector('.social__comments');
 
-const COMMENTS_PER_LOAD = 5; //Количество комментариев для одной загрузки
 let currentComments = []; //Хранит все комментарии текущего фото
 let displayedCommentsCount = 0; //Cчетчик показанных комментариев
 
@@ -33,18 +34,20 @@ const renderComments = (comments) => {
   });
   commentsList.appendChild(fragment);
 
-  // Обновляем счетчики
   displayedCommentsCount += comments.length;
   commentsShownCount.textContent = displayedCommentsCount;
   commentsTotalCount.textContent = currentComments.length;
 
-  // Скрываем кнопку, если все комментарии показаны
   commentsLoader.classList.toggle('hidden', displayedCommentsCount >= currentComments.length);
 };
 
-const commentsLoaderHandler = () => {
+const loadComments = () => {
   const nextComments = currentComments.slice(displayedCommentsCount, displayedCommentsCount + COMMENTS_PER_LOAD);
   renderComments(nextComments);
+};
+
+const commentsLoaderHandler = () => {
+  loadComments();
 };
 
 const openFullsizeViewer = (photoData) => {
@@ -53,19 +56,16 @@ const openFullsizeViewer = (photoData) => {
   likesCount.textContent = photoData.likes;
   socialCaption.textContent = photoData.description;
 
-  // Инициализация комментариев
   currentComments = photoData.comments;
   displayedCommentsCount = 0;
   commentsList.innerHTML = '';
 
-  // Показываем элементы управления комментариями
   commentsCount.classList.remove('hidden');
   commentsLoader.classList.remove('hidden');
 
-  // Загружаем первую порцию комментариев
-  commentsLoaderHandler();
+  //commentsLoaderHandler();
+  loadComments();
 
-  // Назначаем обработчики
   closeButton.addEventListener('click', closeButtonClickHandler);
   document.addEventListener('keydown', documentKeyDownHandler);
   commentsLoader.addEventListener('click', commentsLoaderHandler);
