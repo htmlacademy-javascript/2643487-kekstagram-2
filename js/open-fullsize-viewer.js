@@ -36,7 +36,6 @@ const renderComments = (comments) => {
 
   displayedCommentsCount += comments.length;
   commentsShownCount.textContent = displayedCommentsCount;
-  commentsTotalCount.textContent = currentComments.length;
 
   commentsLoader.classList.toggle('hidden', displayedCommentsCount >= currentComments.length);
 };
@@ -62,8 +61,8 @@ const openFullsizeViewer = (photoData) => {
 
   commentsCount.classList.remove('hidden');
   commentsLoader.classList.remove('hidden');
+  commentsTotalCount.textContent = currentComments.length;
 
-  //commentsLoaderHandler();
   loadComments();
 
   closeButton.addEventListener('click', closeButtonClickHandler);
