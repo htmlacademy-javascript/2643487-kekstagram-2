@@ -12,7 +12,6 @@ const initImageUploadForm = () => {
   // Показываем форму редактирования
     uploadOverlay.classList.remove('hidden');
     body.classList.add('modal-open');
-    resetPristine();
     initValidation();
   });
 };
@@ -28,8 +27,8 @@ document.addEventListener('keydown', (evt) => {
 function closeForm() {
   uploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
-  uploadInput.value = ''; // Сбрасываем значение поля загрузки файла
-  // Сбрасываем другие поля формы
+  //resetPristine();
+  uploadInput.value = '';
   document.querySelector('.scale__control--value').value = '100%';
   document.querySelector('#effect-none').checked = true;
   document.querySelector('.text__hashtags').value = '';
