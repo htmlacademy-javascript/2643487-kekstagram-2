@@ -1,3 +1,5 @@
+import { resetPristine, initValidation } from './validator.js';
+
 // Обработчик изменения поля загрузки файла
 const body = document.body;
 const uploadInput = document.querySelector('.img-upload__input');
@@ -10,6 +12,8 @@ const initImageUploadForm = () => {
   // Показываем форму редактирования
     uploadOverlay.classList.remove('hidden');
     body.classList.add('modal-open');
+    resetPristine();
+    initValidation();
   });
 };
 
