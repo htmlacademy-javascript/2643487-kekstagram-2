@@ -1,131 +1,118 @@
-const MAX_COMMENT_LENGTH = 4; //Максимальная длина комментария
-const MAX_HASHTAGS_COUNT = 5; //Максимальное число комментариев
-const MAX_HASHTAGS_LENGTH = 20; //Максимальная длина хэштхга
+const MAX_HASHTAG_COUNT = 5;
+const MAX_HASHTAG_LENGTH = 20;
+const MAX_COMMENT_LENGTH = 10;
+const HASHTAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
 
-const ERROR_MESSAGES = {
-  HASHTAG_ONLY_HASH: 'Хэштег не может состоять только из решётки',
-  HASHTAG_INVALID: 'Неправильный формат хэштега. Допустимы только буквы и цифры',
-  HASHTAG_MAX_LENGTH: `Максимальная длина хэштега - ${MAX_HASHTAGS_LENGTH} символов`,
-  HASHTAG_MAX_COUNT: `Нельзя указать больше ${MAX_HASHTAGS_COUNT} хэштегов`,
-  HASHTAG_DUPLICATE: 'Хэштеги не должны повторяться',
-  COMMENT_MAX_LENGTH: `Комментарий не может быть длиннее ${MAX_COMMENT_LENGTH} символов`
+const ErrorMessage = {
+  INVALID_HASHTAG: 'Неправильный хэштег',
+  HASHTAG_TOO_LONG: `Максимальная длина хэштега ${MAX_COMMENT_LENGTH} символов`,
+  HASHTAG_MAX_COUNT: `Нельзя указать больше ${MAX_HASHTAG_COUNT} хэштегов`,
+  DUPLICATE_HASHTAG: 'Хэштеги не должны повторяться',
+  COMMENT_TOO_LONG: `Длина комментария не может быть больше ${MAX_COMMENT_LENGTH} символов`
 };
 
-//const initValidation = () => {
-const uploadForm = document.querySelector('.img-upload__form');
-const hashtagsInput = document.querySelector('.text__hashtags');
-const descriptionInput = document.querySelector('.text__description');
+const validateHashtag = (hashtag) => {
+  // Проверка длины хэштега
+  if (hashtag.length > MAX_HASHTAG_LENGTH) {
+    return false;
+  }
 
-const pristine = new Pristine(uploadForm, {
-  classTo: 'img-upload__field-wrapper',
-  errorClass: 'img-upload__field-wrapper--error',
-  errorTextParent: 'img-upload__field-wrapper',
-  errorTextTag: 'div',
-  errorTextClass: 'pristine-error'
-});
-
-// Проверка формата отдельного хэштега
-const checkHashtagFormat = (tag) => /^#[a-zа-яё0-9]{1,19}$/i.test(tag);
-
-// Проверка количества хэштегов
-const checkHashtagsCount = (hashtags) => hashtags.length <= MAX_HASHTAGS_COUNT;
-
-// Проверка уникальности хэштегов
-const checkHashtagsUniqueness = (hashtags) => {
-  const lowerCaseHashtags = hashtags.map((tag)=> tag.toLowerCase());
-  return new Set(lowerCaseHashtags).size === lowerCaseHashtags.length;
+  if (hashtag === '#') {
+    return false;
+  }
+  return HASHTAG_REGEX.test(hashtag);
 };
 
-// Основная проверка хэштегов
-const checkHashtags = (value) => {
-  const input = value.trim();
-  if (input === '') {
+const validateHashtags = (value) => {
+  if (!value.trim()) {
     return true;
   }
 
-  const hashtags = input.split(/\s+/).filter((tag) => tag !== '');
+  const hashtags = value.trim().split(/\s+/);
 
-  if (!checkHashtagsCount(hashtags)) {
-    pristine.addError(hashtagsInput, ERROR_MESSAGES.HASHTAG_MAX_COUNT);
+  if (hashtags.length > MAX_HASHTAG_COUNT) {
     return false;
   }
 
-  for (const tag of hashtags) {
-    if (!checkHashtagFormat(tag)) {
-      const errorMsg = tag === '#'
-        ? ERROR_MESSAGES.HASHTAG_ONLY_HASH
-        : ERROR_MESSAGES.HASHTAG_INVALID;
-      pristine.addError(hashtagsInput, errorMsg);
-      return false;
-    }
-
-    if (tag.length > MAX_HASHTAGS_LENGTH) {
-      pristine.addError(hashtagsInput, ERROR_MESSAGES.HASHTAG_MAX_LENGTH);
+  for (const hashtag of hashtags) {
+    if (!validateHashtag(hashtag)) {
       return false;
     }
   }
 
-  if (!checkHashtagsUniqueness(hashtags)) {
-    pristine.addError(hashtagsInput, ERROR_MESSAGES.HASHTAG_DUPLICATE);
+  const lowerCaseHashtags = hashtags.map((tag) => tag.toLowerCase());
+  const uniqueHashtags = new Set(lowerCaseHashtags);
+  if (uniqueHashtags.size !== hashtags.length) {
     return false;
   }
 
   return true;
 };
 
-// Проверка длины комментария
-const checkCommentLength = (value) => {
-  if (value.length > MAX_COMMENT_LENGTH) {
-    pristine.addError(descriptionInput, 'error'); //ERROR_MESSAGES.COMMENT_MAX_LENGTH;
-    return false;
+const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
+
+const getHashtagErrorMessage = (value) => {
+  if (!value.trim()) {
+    return '';
   }
-  return true;
+
+  const hashtags = value.trim().split(/\s+/);
+
+  if (hashtags.length > MAX_HASHTAG_COUNT) {
+    return ErrorMessage.HASHTAG_MAX_COUNT;
+  }
+
+  for (const hashtag of hashtags) {
+    if (hashtag.length > MAX_HASHTAG_LENGTH) {
+      return ErrorMessage.HASHTAG_TOO_LONG;
+    }
+    if (!validateHashtag(hashtag)) {
+      return ErrorMessage.INVALID_HASHTAG;
+    }
+  }
+
+  const lowerCaseHashtags = hashtags.map((tag) => tag.toLowerCase());
+  const uniqueHashtags = new Set(lowerCaseHashtags);
+  if (uniqueHashtags.size !== hashtags.length) {
+    return ErrorMessage.DUPLICATE_HASHTAG;
+  }
+
+  return '';
 };
 
-// Добавление валидаторов
-const initValidation = () => {
+const getCommentErrorMessage = (value) => value.length > MAX_COMMENT_LENGTH ? ErrorMessage.COMMENT_TOO_LONG : '';
+
+const validateUploadForm = (formElement) => {
+  const pristine = new Pristine(formElement, {
+    classTo: 'img-upload__field-wrapper',
+    errorClass: 'img-upload__field-wrapper--error',
+    errorTextParent: 'img-upload__field-wrapper',
+    errorTextTag: 'div',
+    errorTextClass: 'pristine-error'
+  });
+
+  const hashtagInput = formElement.querySelector('.text__hashtags');
+  const commentInput = formElement.querySelector('.text__description');
+
   pristine.addValidator(
-    hashtagsInput,
-    checkHashtags,
-    '',
-    false
+    hashtagInput,
+    validateHashtags,
+    () => getHashtagErrorMessage(hashtagInput.value)
   );
 
   pristine.addValidator(
-    descriptionInput,
-    checkCommentLength,
-    //ERROR_MESSAGES.COMMENT_MAX_LENGTH,
+    commentInput,
+    validateComment,
+    () => getCommentErrorMessage(commentInput.value)
   );
+
+  formElement.addEventListener('submit', (evt) => {
+    if (!pristine.validate()) {
+      evt.preventDefault();
+    }
+  });
+
+  return pristine;
 };
 
-// Обработчик отправки формы
-const handleFormSubmit = (evt) => {
-  if (!pristine.validate()) {
-    evt.preventDefault();
-  }
-};
-
-// Запрет закрытия формы по Esc при фокусе на полях ввода
-const preventEscClosing = (evt) => {
-  if (evt.key === 'Escape') {
-    evt.stopPropagation();
-  }
-};
-
-// Навешивание обработчиков
-uploadForm.addEventListener('submit', handleFormSubmit);
-hashtagsInput.addEventListener('keydown', preventEscClosing);
-descriptionInput.addEventListener('keydown', preventEscClosing);
-
-//return pristine;
-//};
-
-const resetPristine = () => {
-  uploadForm.reset();
-  pristine.reset();
-};
-
-// Инициализация при загрузке страницы
-//document.addEventListener('DOMContentLoaded', initPristine);
-
-export { initValidation, resetPristine };
+export { validateUploadForm };

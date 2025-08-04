@@ -1,18 +1,16 @@
-import { resetPristine, initValidation } from './validator.js';
+import { validateUploadForm } from './validator.js';
 
-// Обработчик изменения поля загрузки файла
 const body = document.body;
 const uploadInput = document.querySelector('.img-upload__input');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const cancelButton = document.querySelector('.img-upload__cancel');
+const uploadForm = document.querySelector('.img-upload__form');
 
 
 const initImageUploadForm = () => {
   uploadInput.addEventListener('change', () => {
-  // Показываем форму редактирования
     uploadOverlay.classList.remove('hidden');
     body.classList.add('modal-open');
-    initValidation();
   });
 };
 
@@ -24,15 +22,13 @@ document.addEventListener('keydown', (evt) => {
   }
 });
 
+const uploadFormValidator = validateUploadForm(uploadForm);
+
 function closeForm() {
   uploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
-  //resetPristine();
-  uploadInput.value = '';
-  document.querySelector('.scale__control--value').value = '100%';
-  document.querySelector('#effect-none').checked = true;
-  document.querySelector('.text__hashtags').value = '';
-  document.querySelector('.text__description').value = '';
+  uploadForm.reset();
+  uploadFormValidator.reset();
 }
 
 export { initImageUploadForm };
