@@ -1,4 +1,5 @@
 import { setupFormValidation } from './validator.js';
+import { initImageEditor, resetImageEditor } from './image-editor.js';
 
 const body = document.body;
 const uploadInput = document.querySelector('.img-upload__input');
@@ -18,6 +19,8 @@ const uploadFormKeyDownHandler = (evt) => {
 };
 
 const initImageUploadForm = () => {
+  initImageEditor();
+
   uploadInput.addEventListener('change', () => {
     uploadOverlay.classList.remove('hidden');
     document.addEventListener('keydown', uploadFormKeyDownHandler);
@@ -29,6 +32,7 @@ cancelButton.addEventListener('click', closeForm);
 
 function closeForm() {
   uploadForm.reset();
+  resetImageEditor();
   formValidator.cleanup();
   uploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
