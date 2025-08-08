@@ -80,7 +80,6 @@ const EFFECTS = {
   },
 };
 
-// Элементы DOM
 const scaleControlSmaller = document.querySelector('.scale__control--smaller');
 const scaleControlBigger = document.querySelector('.scale__control--bigger');
 const scaleControlValue = document.querySelector('.scale__control--value');
@@ -115,7 +114,7 @@ const onScaleBiggerClick = () => {
 const onSliderUpdate = () => {
   const sliderValue = effectLevelSlider.noUiSlider.get();
   effectLevelValue.value = sliderValue;
-  
+
   if (currentEffect !== 'none') {
     const {filter, unit} = EFFECTS[currentEffect];
     imagePreview.style.filter = `${filter}(${sliderValue}${unit})`;
@@ -160,7 +159,7 @@ const initEffectSlider = () => {
 const resetImageEditor = () => {
   currentScale = DEFAULT_SCALE;
   updateScale(currentScale);
-  
+
   currentEffect = 'none';
   document.querySelector('#effect-none').checked = true;
   updateEffect();

@@ -13,7 +13,6 @@ const formValidator = setupFormValidation(uploadForm);
 const uploadFormKeyDownHandler = (evt) => {
   if (evt.key === 'Escape' && !evt.target.classList.contains('text__hashtags') && !evt.target.classList.contains('text__description')) {
     evt.preventDefault();
-    window.console.log(formValidator);
     closeForm();
   }
 };
