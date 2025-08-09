@@ -1,118 +1,114 @@
-const MAX_HASHTAG_COUNT = 5;
-const MAX_HASHTAG_LENGTH = 20;
-const MAX_COMMENT_LENGTH = 10;
-const HASHTAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
-
-const ErrorMessage = {
-  INVALID_HASHTAG: 'Неправильный хэштег',
-  HASHTAG_TOO_LONG: `Максимальная длина хэштега ${MAX_COMMENT_LENGTH} символов`,
-  HASHTAG_MAX_COUNT: `Нельзя указать больше ${MAX_HASHTAG_COUNT} хэштегов`,
-  DUPLICATE_HASHTAG: 'Хэштеги не должны повторяться',
-  COMMENT_TOO_LONG: `Длина комментария не может быть больше ${MAX_COMMENT_LENGTH} символов`
+/* eslint-disable curly */
+const ValidationRules = {
+  MAX_HASHTAGS: 5,
+  HASHTAG_MAX_LENGTH: 20,
+  COMMENT_MAX_LENGTH: 140,
+  HASHTAG_PATTERN: /^#[a-zа-яё0-9]{1,19}$/i,
 };
 
-const validateHashtag = (hashtag) => {
-  // Проверка длины хэштега
-  if (hashtag.length > MAX_HASHTAG_LENGTH) {
-    return false;
-  }
-
-  if (hashtag === '#') {
-    return false;
-  }
-  return HASHTAG_REGEX.test(hashtag);
+const ErrorMessages = {
+  INVALID_FORMAT: 'Неправильный хэштег',
+  TOO_LONG: `Максимальная длина хэштега ${ValidationRules.HASHTAG_MAX_LENGTH} символов`,
+  TOO_MANY: `Нельзя указать больше ${ValidationRules.MAX_HASHTAGS} хэштегов`,
+  DUPLICATES: 'Хэштеги не должны повторяться',
+  COMMENT_TOO_LONG: `Длина комментария не может быть больше ${ValidationRules.COMMENT_MAX_LENGTH} символов`,
 };
 
-const validateHashtags = (value) => {
-  if (!value.trim()) {
-    return true;
-  }
-
-  const hashtags = value.trim().split(/\s+/);
-
-  if (hashtags.length > MAX_HASHTAG_COUNT) {
-    return false;
-  }
-
-  for (const hashtag of hashtags) {
-    if (!validateHashtag(hashtag)) {
-      return false;
-    }
-  }
-
-  const lowerCaseHashtags = hashtags.map((tag) => tag.toLowerCase());
-  const uniqueHashtags = new Set(lowerCaseHashtags);
-  if (uniqueHashtags.size !== hashtags.length) {
-    return false;
-  }
-
-  return true;
+// Общая функция для парсинга хэштегов
+const parseHashtags = (input) => {
+  const trimmedValue = input.trim();
+  return trimmedValue ? trimmedValue.split(/\s+/) : [];
 };
 
-const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
+const isValidTag = (tag) => {
+  if (tag === '#') return false;
+  if (tag.length > ValidationRules.HASHTAG_MAX_LENGTH) return false;
+  return ValidationRules.HASHTAG_PATTERN.test(tag);
+};
 
-const getHashtagErrorMessage = (value) => {
-  if (!value.trim()) {
-    return '';
+const checkTagCount = (tags) => tags.length <= ValidationRules.MAX_HASHTAGS;
+
+const checkUniqueTags = (tags) => {
+  const lowerCaseTags = tags.map((tag) => tag.toLowerCase());
+  return new Set(lowerCaseTags).size === tags.length;
+};
+
+// Универсальная функция валидации
+const validateTags = (inputValue) => {
+  const tags = parseHashtags(inputValue);
+  if (!tags.length) return true;
+
+  return checkTagCount(tags) &&
+         tags.every(isValidTag) &&
+         checkUniqueTags(tags);
+};
+
+// Универсальная функция получения ошибки
+const getTagValidationError = (inputValue) => {
+  const tags = parseHashtags(inputValue);
+  if (!tags.length) return '';
+
+  if (!checkTagCount(tags)) {
+    return ErrorMessages.TOO_MANY;
   }
 
-  const hashtags = value.trim().split(/\s+/);
-
-  if (hashtags.length > MAX_HASHTAG_COUNT) {
-    return ErrorMessage.HASHTAG_MAX_COUNT;
+  const invalidTag = tags.find((tag) => !isValidTag(tag));
+  if (invalidTag) {
+    return invalidTag.length > ValidationRules.HASHTAG_MAX_LENGTH
+      ? ErrorMessages.TOO_LONG
+      : ErrorMessages.INVALID_FORMAT;
   }
 
-  for (const hashtag of hashtags) {
-    if (hashtag.length > MAX_HASHTAG_LENGTH) {
-      return ErrorMessage.HASHTAG_TOO_LONG;
-    }
-    if (!validateHashtag(hashtag)) {
-      return ErrorMessage.INVALID_HASHTAG;
-    }
-  }
-
-  const lowerCaseHashtags = hashtags.map((tag) => tag.toLowerCase());
-  const uniqueHashtags = new Set(lowerCaseHashtags);
-  if (uniqueHashtags.size !== hashtags.length) {
-    return ErrorMessage.DUPLICATE_HASHTAG;
+  if (!checkUniqueTags(tags)) {
+    return ErrorMessages.DUPLICATES;
   }
 
   return '';
 };
 
-const getCommentErrorMessage = (value) => value.length > MAX_COMMENT_LENGTH ? ErrorMessage.COMMENT_TOO_LONG : '';
+const validateCommentText = (text) => text.length <= ValidationRules.COMMENT_MAX_LENGTH;
 
-const validateUploadForm = (formElement) => {
-  const pristine = new Pristine(formElement, {
+const getCommentError = (text) =>
+  !validateCommentText(text) ? ErrorMessages.COMMENT_TOO_LONG : '';
+
+// Функция для добавления валидаторов
+const addFormValidator = (validator, element, validationFn, errorFn) => {
+  validator.addValidator(
+    element,
+    validationFn,
+    () => errorFn(element.value)
+  );
+};
+
+const setupFormValidation = (form) => {
+  const validator = new Pristine(form, {
     classTo: 'img-upload__field-wrapper',
     errorClass: 'img-upload__field-wrapper--error',
     errorTextParent: 'img-upload__field-wrapper',
     errorTextTag: 'div',
-    errorTextClass: 'pristine-error'
+    errorTextClass: 'pristine-error',
   });
 
-  const hashtagInput = formElement.querySelector('.text__hashtags');
-  const commentInput = formElement.querySelector('.text__description');
+  const tagsInput = form.querySelector('.text__hashtags');
+  const commentInput = form.querySelector('.text__description');
 
-  pristine.addValidator(
-    hashtagInput,
-    validateHashtags,
-    () => getHashtagErrorMessage(hashtagInput.value)
-  );
+  addFormValidator(validator, tagsInput, validateTags, getTagValidationError);
+  addFormValidator(validator, commentInput, validateCommentText, getCommentError);
 
-  pristine.addValidator(
-    commentInput,
-    validateComment,
-    () => getCommentErrorMessage(commentInput.value)
-  );
-
-  formElement.addEventListener('submit', (evt) => {
-    if (!pristine.validate()) {
-      evt.preventDefault();
+  const submitHandler = (event) => {
+    if (!validator.validate()) {
+      event.preventDefault();
     }
-  });
+  };
 
-  return pristine;
+  form.addEventListener('submit', submitHandler);
+
+  return {
+    cleanup: () => {
+      form.removeEventListener('submit', submitHandler);
+      validator.reset();
+    },
+  };
 };
 
-export { validateUploadForm };
+export { setupFormValidation };
