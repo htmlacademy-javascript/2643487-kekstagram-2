@@ -1,4 +1,4 @@
-/* eslint-disable curly */
+
 const ValidationRules = {
   MAX_HASHTAGS: 5,
   HASHTAG_MAX_LENGTH: 20,
@@ -21,8 +21,9 @@ const parseHashtags = (input) => {
 };
 
 const isValidTag = (tag) => {
-  if (tag === '#') return false;
-  if (tag.length > ValidationRules.HASHTAG_MAX_LENGTH) return false;
+  if ((tag === '#') || (tag.length > ValidationRules.HASHTAG_MAX_LENGTH)) {
+    return false;
+  }
   return ValidationRules.HASHTAG_PATTERN.test(tag);
 };
 
@@ -36,7 +37,9 @@ const checkUniqueTags = (tags) => {
 // Универсальная функция валидации
 const validateTags = (inputValue) => {
   const tags = parseHashtags(inputValue);
-  if (!tags.length) return true;
+  if (!tags.length) {
+    return true;
+  }
 
   return checkTagCount(tags) &&
          tags.every(isValidTag) &&
@@ -46,7 +49,9 @@ const validateTags = (inputValue) => {
 // Универсальная функция получения ошибки
 const getTagValidationError = (inputValue) => {
   const tags = parseHashtags(inputValue);
-  if (!tags.length) return '';
+  if (!tags.length) {
+    return '';
+  }
 
   if (!checkTagCount(tags)) {
     return ErrorMessages.TOO_MANY;
@@ -96,6 +101,7 @@ const setupFormValidation = (form) => {
   addFormValidator(validator, commentInput, validateCommentText, getCommentError);
 
   const submitHandler = (event) => {
+    window.console.log(validator.validate());
     if (!validator.validate()) {
       event.preventDefault();
     }
@@ -105,7 +111,6 @@ const setupFormValidation = (form) => {
 
   return {
     cleanup: () => {
-      form.removeEventListener('submit', submitHandler);
       validator.reset();
     },
   };
