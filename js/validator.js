@@ -103,6 +103,7 @@ const setupFormValidation = (form) => {
   const submitHandler = (event) => {
     window.console.log(validator.validate());
     if (!validator.validate()) {
+      window.console.log(validator.validate());
       event.preventDefault();
     }
   };
