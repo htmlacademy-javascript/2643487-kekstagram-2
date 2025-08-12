@@ -85,6 +85,7 @@ const addFormValidator = (validator, element, validationFn, errorFn) => {
   );
 };
 
+
 const setupFormValidation = (form) => {
   const validator = new Pristine(form, {
     classTo: 'img-upload__field-wrapper',
@@ -96,9 +97,19 @@ const setupFormValidation = (form) => {
 
   const tagsInput = form.querySelector('.text__hashtags');
   const commentInput = form.querySelector('.text__description');
+  const submitButton = form.querySelector('.img-upload__submit');
+
+  const updateSubmitButton = () => {
+    submitButton.disabled = !validator.validate();
+  };
+
+  tagsInput.addEventListener('input', updateSubmitButton);
+  commentInput.addEventListener('input', updateSubmitButton);
 
   addFormValidator(validator, tagsInput, validateTags, getTagValidationError);
   addFormValidator(validator, commentInput, validateCommentText, getCommentError);
+
+  //submitButton.disabled = true;
 
   const submitHandler = (event) => {
     window.console.log(validator.validate());
@@ -113,8 +124,9 @@ const setupFormValidation = (form) => {
   return {
     cleanup: () => {
       validator.reset();
+      submitButton.disabled = false;
     },
-    test: validator.validate(),
+    validate: validator.validate(),
   };
 };
 
