@@ -113,6 +113,7 @@ const setupFormValidation = (form) => {
     cleanup: () => {
       validator.reset();
     },
+    test: validator.validate(),
   };
 };
 

@@ -134,13 +134,6 @@ const updateEffect = () => {
   }
 };
 
-// const onEffectChange = (evt) => {
-//   if (evt.target.classList.contains('effects__radio')) {
-//     currentEffect = evt.target.value;
-//     updateEffect();
-//   }
-// };
-
 const onEffectChange = () => {
   currentEffect = form['effect'].value;
   updateEffect();
