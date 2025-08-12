@@ -126,7 +126,6 @@ const updateEffect = () => {
   if (currentEffect === 'none') {
     effectLevelContainer.classList.add('hidden');
     imagePreview.style.filter = 'none';
-    //return;
   } else {
     effectLevelContainer.classList.remove('hidden');
     effectLevelSlider.noUiSlider.updateOptions(EFFECTS[currentEffect].options);
@@ -158,9 +157,7 @@ const initEffectSlider = () => {
 const resetImageEditor = () => {
   currentScale = DEFAULT_SCALE;
   updateScale(currentScale);
-
   currentEffect = 'none';
-  //document.querySelector('#effect-none').checked = true;
   updateEffect();
 };
 

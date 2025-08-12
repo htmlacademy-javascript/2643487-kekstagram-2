@@ -25,7 +25,6 @@ const uploadFormKeyDownHandler = (evt) => {
 
 const setSubmitButtonStateDisable = (isDisabled) => {
   submitButton.disabled = isDisabled;
-  window.console.log('button ',isDisabled);
   submitButton.textContent = submitButton.disabled ? 'Публикую...' : 'Опубликовать';
 };
 
@@ -34,7 +33,6 @@ const resetForm = () => {
   resetImageEditor();
   uploadInput.value = '';
   submitButton.disabled = false;
-  //setSubmitButtonState(true);
 };
 
 function closeForm() {
