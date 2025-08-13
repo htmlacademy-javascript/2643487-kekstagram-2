@@ -1,7 +1,7 @@
 import { setupFormValidation } from './validator.js';
 import { sendData } from './api.js';
 import { initImageEditor, resetImageEditor } from './image-editor.js';
-import { showSuccess, showError } from './utils.js';
+import { showSuccess, showError, showDataError } from './utils.js';
 
 const VALID_IMAGE_TYPES = [
   'image/jpeg',
@@ -86,7 +86,7 @@ const initImageUploadForm = () => {
     const file = uploadInput.files[0];
 
     if (!isImageFile(file)) {
-      showError('Можно загружать только изображения (JPEG, PNG, GIF, WebP)');
+      showDataError('Можно загружать только изображения (JPEG, PNG, GIF, WebP)');
       uploadInput.value = '';
       return;
     }
