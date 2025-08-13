@@ -1,4 +1,4 @@
-/* eslint-disable curly */
+
 const ValidationRules = {
   MAX_HASHTAGS: 5,
   HASHTAG_MAX_LENGTH: 20,
@@ -21,8 +21,9 @@ const parseHashtags = (input) => {
 };
 
 const isValidTag = (tag) => {
-  if (tag === '#') return false;
-  if (tag.length > ValidationRules.HASHTAG_MAX_LENGTH) return false;
+  if ((tag === '#') || (tag.length > ValidationRules.HASHTAG_MAX_LENGTH)) {
+    return false;
+  }
   return ValidationRules.HASHTAG_PATTERN.test(tag);
 };
 
@@ -36,7 +37,9 @@ const checkUniqueTags = (tags) => {
 // Универсальная функция валидации
 const validateTags = (inputValue) => {
   const tags = parseHashtags(inputValue);
-  if (!tags.length) return true;
+  if (!tags.length) {
+    return true;
+  }
 
   return checkTagCount(tags) &&
          tags.every(isValidTag) &&
@@ -46,7 +49,9 @@ const validateTags = (inputValue) => {
 // Универсальная функция получения ошибки
 const getTagValidationError = (inputValue) => {
   const tags = parseHashtags(inputValue);
-  if (!tags.length) return '';
+  if (!tags.length) {
+    return '';
+  }
 
   if (!checkTagCount(tags)) {
     return ErrorMessages.TOO_MANY;
@@ -80,6 +85,7 @@ const addFormValidator = (validator, element, validationFn, errorFn) => {
   );
 };
 
+
 const setupFormValidation = (form) => {
   const validator = new Pristine(form, {
     classTo: 'img-upload__field-wrapper',
@@ -91,6 +97,14 @@ const setupFormValidation = (form) => {
 
   const tagsInput = form.querySelector('.text__hashtags');
   const commentInput = form.querySelector('.text__description');
+  const submitButton = form.querySelector('.img-upload__submit');
+
+  const updateSubmitButton = () => {
+    submitButton.disabled = !validator.validate();
+  };
+
+  tagsInput.addEventListener('input', updateSubmitButton);
+  commentInput.addEventListener('input', updateSubmitButton);
 
   addFormValidator(validator, tagsInput, validateTags, getTagValidationError);
   addFormValidator(validator, commentInput, validateCommentText, getCommentError);
@@ -105,9 +119,10 @@ const setupFormValidation = (form) => {
 
   return {
     cleanup: () => {
-      form.removeEventListener('submit', submitHandler);
       validator.reset();
+      submitButton.disabled = false;
     },
+    validate: validator.validate(),
   };
 };
 

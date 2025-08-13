@@ -3,6 +3,10 @@ const pictureTemplate = document.querySelector('#picture').content;
 const fragment = document.createDocumentFragment();
 
 const renderThumbnails = (photosData) => {
+  //Очищаем предыдущие миниатюры
+  const existingPictures = picturesContainer.querySelectorAll('.picture');
+  existingPictures.forEach((picture) => picture.remove());
+
   photosData.forEach(({ id, url, likes, comments }) => {
     const thumbnail = pictureTemplate.cloneNode(true);
     const picture = thumbnail.querySelector('.picture');

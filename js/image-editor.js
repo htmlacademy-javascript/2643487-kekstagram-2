@@ -80,14 +80,15 @@ const EFFECTS = {
   },
 };
 
-const scaleControlSmaller = document.querySelector('.scale__control--smaller');
-const scaleControlBigger = document.querySelector('.scale__control--bigger');
-const scaleControlValue = document.querySelector('.scale__control--value');
-const imagePreview = document.querySelector('.img-upload__preview img');
-const effectLevelSlider = document.querySelector('.effect-level__slider');
-const effectLevelValue = document.querySelector('.effect-level__value');
-const effectsList = document.querySelector('.effects__list');
-const effectLevelContainer = document.querySelector('.img-upload__effect-level');
+const form = document.querySelector('.img-upload__form');
+const scaleControlSmaller = form.querySelector('.scale__control--smaller');
+const scaleControlBigger = form.querySelector('.scale__control--bigger');
+const scaleControlValue = form.querySelector('.scale__control--value');
+const imagePreview = form.querySelector('.img-upload__preview img');
+const effectLevelSlider = form.querySelector('.effect-level__slider');
+const effectLevelValue = form.querySelector('.effect-level__value');
+const effectsList = form.querySelector('.effects');
+const effectLevelContainer = form.querySelector('.img-upload__effect-level');
 
 // Состояние
 let currentScale = DEFAULT_SCALE;
@@ -125,19 +126,16 @@ const updateEffect = () => {
   if (currentEffect === 'none') {
     effectLevelContainer.classList.add('hidden');
     imagePreview.style.filter = 'none';
-    return;
+  } else {
+    effectLevelContainer.classList.remove('hidden');
+    effectLevelSlider.noUiSlider.updateOptions(EFFECTS[currentEffect].options);
+    effectLevelSlider.noUiSlider.set(EFFECTS[currentEffect].options.start);
   }
-
-  effectLevelContainer.classList.remove('hidden');
-  effectLevelSlider.noUiSlider.updateOptions(EFFECTS[currentEffect].options);
-  effectLevelSlider.noUiSlider.set(EFFECTS[currentEffect].options.start);
 };
 
-const onEffectChange = (evt) => {
-  if (evt.target.classList.contains('effects__radio')) {
-    currentEffect = evt.target.value;
-    updateEffect();
-  }
+const onEffectChange = () => {
+  currentEffect = form['effect'].value;
+  updateEffect();
 };
 
 // Инициализация слайдера
@@ -159,9 +157,7 @@ const initEffectSlider = () => {
 const resetImageEditor = () => {
   currentScale = DEFAULT_SCALE;
   updateScale(currentScale);
-
   currentEffect = 'none';
-  document.querySelector('#effect-none').checked = true;
   updateEffect();
 };
 
