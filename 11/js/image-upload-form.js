@@ -3,6 +3,13 @@ import { sendData } from './api.js';
 import { initImageEditor, resetImageEditor } from './image-editor.js';
 import { showSuccess, showError } from './utils.js';
 
+const VALID_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp'
+];
+
 const body = document.body;
 const upload = body.querySelector('.img-upload');
 const uploadInput = upload.querySelector('.img-upload__input');
@@ -15,6 +22,8 @@ const effectsPreviews = uploadForm.querySelectorAll('.effects__preview');
 
 
 const formValidator = setupFormValidation(uploadForm);
+
+const isImageFile = (file) => file && VALID_IMAGE_TYPES.includes(file.type);
 
 const uploadFormKeyDownHandler = (evt) => {
   if (evt.key === 'Escape' && !evt.target.classList.contains('text__hashtags') && !evt.target.classList.contains('text__description')) {
@@ -75,6 +84,13 @@ const initImageUploadForm = () => {
   uploadForm.addEventListener('submit', onFormSubmit);
   uploadInput.addEventListener('change', () => {
     const file = uploadInput.files[0];
+
+    if (!isImageFile(file)) {
+      showError('Можно загружать только изображения (JPEG, PNG, GIF, WebP)');
+      uploadInput.value = '';
+      return;
+    }
+
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       previewImage.src = imageUrl;
