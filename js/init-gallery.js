@@ -20,7 +20,17 @@ const onThumbnailClick = (evt, photosData) => {
 
 const initGallery = (photosData) => {
   renderThumbnails(photosData);
-  picturesContainer.addEventListener('click', (evt) => onThumbnailClick(evt, photosData));
+
+  // Удаляем старый обработчик, если он есть
+  const oldHandler = picturesContainer.onclick;
+  if (oldHandler) {
+    picturesContainer.removeEventListener('click', oldHandler);
+  }
+
+  // Добавляем новый обработчик
+  const clickHandler = (evt) => onThumbnailClick(evt, photosData);
+  picturesContainer.addEventListener('click', clickHandler);
+  picturesContainer.onclick = clickHandler;
 };
 
 export { initGallery };
