@@ -163,6 +163,7 @@ const resetImageEditor = () => {
 
 // Инициализация всего модуля
 const initImageEditor = () => {
+
   // Масштабирование
   updateScale(DEFAULT_SCALE);
   scaleControlSmaller.addEventListener('click', onScaleSmallerClick);

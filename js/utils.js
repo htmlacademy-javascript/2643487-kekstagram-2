@@ -1,3 +1,5 @@
+const REMOVE_MESSAGE_DELAY = 5000;
+
 const body = document.body;
 const successTemplate = document.querySelector('#success').content.querySelector('.success');
 const errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -9,33 +11,37 @@ const showMessage = (template, isDataError = false) => {
 
   const removeMessage = () => {
     message.remove();
-    document.removeEventListener('keydown', onDocumentKeyDown);
-    document.removeEventListener('click', onDocumentClick);
+    document.removeEventListener('keydown', documentKeyDownHandler);
+    document.removeEventListener('click', documentClickHandler);
   };
 
-  function onDocumentKeyDown(evt) {
-    if (evt.key === 'Escape') {
+  function documentKeyDownHandler(evt) {
+    if (evt.key === 'Escape' && !evt.target.closest('.success__inner') && !evt.target.closest('.error__inner')) {
       evt.preventDefault();
       removeMessage();
     }
   }
 
-  function onDocumentClick(evt) {
+  function documentClickHandler(evt) {
     if (!evt.target.closest('.success__inner') && !evt.target.closest('.error__inner')) {
       removeMessage();
     }
   }
 
+  const messageButtonClickHandler = () => {
+    removeMessage();
+  };
+
   const button = message.querySelector('button');
   if (button) {
-    button.addEventListener('click', removeMessage);
+    button.addEventListener('click', messageButtonClickHandler);
   }
 
-  document.addEventListener('keydown', onDocumentKeyDown);
-  document.addEventListener('click', onDocumentClick);
+  document.addEventListener('keydown', documentKeyDownHandler);
+  document.addEventListener('click', documentClickHandler);
 
   if (isDataError) {
-    setTimeout(removeMessage, 5000);
+    setTimeout(removeMessage, REMOVE_MESSAGE_DELAY);
   }
 };
 

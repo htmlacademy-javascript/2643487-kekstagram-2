@@ -20,13 +20,12 @@ const submitButton = upload.querySelector('.img-upload__submit');
 const previewImage = uploadForm.querySelector('.img-upload__preview img');
 const effectsPreviews = uploadForm.querySelectorAll('.effects__preview');
 
-
 const formValidator = setupFormValidation(uploadForm);
 
 const isImageFile = (file) => file && VALID_IMAGE_TYPES.includes(file.type);
 
 const uploadFormKeyDownHandler = (evt) => {
-  if (evt.key === 'Escape' && !evt.target.classList.contains('text__hashtags') && !evt.target.classList.contains('text__description')) {
+  if (evt.key === 'Escape' && !evt.target.classList.contains('text__hashtags') && !evt.target.classList.contains('text__description') && !document.body.contains(body.querySelector('.error'))) {
     evt.preventDefault();
     closeForm();
   }
@@ -62,7 +61,7 @@ const onError = (error) => {
   setSubmitButtonStateDisable(false);
 };
 
-const onFormSubmit = async (evt) => {
+const formSubmitHundler = async (evt) => {
   evt.preventDefault();
 
   if (formValidator.validate) {
@@ -81,8 +80,10 @@ const onFormSubmit = async (evt) => {
 const initImageUploadForm = () => {
   initImageEditor();
 
-  uploadForm.addEventListener('submit', onFormSubmit);
+  uploadForm.addEventListener('submit', formSubmitHundler);
   uploadInput.addEventListener('change', () => {
+
+    uploadInput.blur();
     const file = uploadInput.files[0];
 
     if (!isImageFile(file)) {

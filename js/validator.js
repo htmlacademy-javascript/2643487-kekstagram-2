@@ -99,12 +99,16 @@ const setupFormValidation = (form) => {
   const commentInput = form.querySelector('.text__description');
   const submitButton = form.querySelector('.img-upload__submit');
 
-  const updateSubmitButton = () => {
+  const tagsInputHandler = () => {
     submitButton.disabled = !validator.validate();
   };
 
-  tagsInput.addEventListener('input', updateSubmitButton);
-  commentInput.addEventListener('input', updateSubmitButton);
+  const commentInputHandler = () => {
+    submitButton.disabled = !validator.validate();
+  };
+
+  tagsInput.addEventListener('input', tagsInputHandler);
+  commentInput.addEventListener('input', commentInputHandler);
 
   addFormValidator(validator, tagsInput, validateTags, getTagValidationError);
   addFormValidator(validator, commentInput, validateCommentText, getCommentError);
