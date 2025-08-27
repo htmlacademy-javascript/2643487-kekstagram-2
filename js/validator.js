@@ -1,4 +1,3 @@
-
 const ValidationRules = {
   MAX_HASHTAGS: 5,
   HASHTAG_MAX_LENGTH: 20,
@@ -85,7 +84,6 @@ const addFormValidator = (validator, element, validationFn, errorFn) => {
   );
 };
 
-
 const setupFormValidation = (form) => {
   const validator = new Pristine(form, {
     classTo: 'img-upload__field-wrapper',
@@ -99,12 +97,22 @@ const setupFormValidation = (form) => {
   const commentInput = form.querySelector('.text__description');
   const submitButton = form.querySelector('.img-upload__submit');
 
-  const updateSubmitButton = () => {
-    submitButton.disabled = !validator.validate();
+  const validateForm = () => {
+    const isValid = validator.validate();
+    submitButton.disabled = !isValid;
+    return isValid;
   };
 
-  tagsInput.addEventListener('input', updateSubmitButton);
-  commentInput.addEventListener('input', updateSubmitButton);
+  const tagsInputHandler = () => {
+    validateForm();
+  };
+
+  const commentInputHandler = () => {
+    validateForm();
+  };
+
+  tagsInput.addEventListener('input', tagsInputHandler);
+  commentInput.addEventListener('input', commentInputHandler);
 
   addFormValidator(validator, tagsInput, validateTags, getTagValidationError);
   addFormValidator(validator, commentInput, validateCommentText, getCommentError);
@@ -122,7 +130,7 @@ const setupFormValidation = (form) => {
       validator.reset();
       submitButton.disabled = false;
     },
-    validate: validator.validate(),
+    validate: () => validator.validate(),
   };
 };
 

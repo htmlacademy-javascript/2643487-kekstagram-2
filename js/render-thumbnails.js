@@ -3,11 +3,11 @@ const pictureTemplate = document.querySelector('#picture').content;
 const fragment = document.createDocumentFragment();
 
 const renderThumbnails = (photosData) => {
-  //Очищаем предыдущие миниатюры
+  // Очищаем предыдущие миниатюры
   const existingPictures = picturesContainer.querySelectorAll('.picture');
   existingPictures.forEach((picture) => picture.remove());
 
-  photosData.forEach(({ id, url, likes, comments }) => {
+  photosData.forEach(({ id, url, likes, comments, description }) => {
     const thumbnail = pictureTemplate.cloneNode(true);
     const picture = thumbnail.querySelector('.picture');
     const pictureImg = thumbnail.querySelector('.picture__img');
@@ -16,6 +16,7 @@ const renderThumbnails = (photosData) => {
 
     picture.dataset.id = id;
     pictureImg.src = url;
+    pictureImg.alt = description || 'Фотография пользователя';
     pictureLikes.textContent = likes;
     pictureComments.textContent = comments.length;
 
