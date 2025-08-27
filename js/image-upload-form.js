@@ -61,10 +61,11 @@ const onError = (error) => {
   setSubmitButtonStateDisable(false);
 };
 
-const formSubmitHundler = async (evt) => {
+const formSubmitHandler = async (evt) => {
   evt.preventDefault();
 
-  if (formValidator.validate) {
+  // Исправленная проверка валидации
+  if (!formValidator.validate()) {
     return;
   }
 
@@ -80,7 +81,7 @@ const formSubmitHundler = async (evt) => {
 const initImageUploadForm = () => {
   initImageEditor();
 
-  uploadForm.addEventListener('submit', formSubmitHundler);
+  uploadForm.addEventListener('submit', formSubmitHandler);
   uploadInput.addEventListener('change', () => {
 
     uploadInput.blur();

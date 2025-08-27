@@ -73,4 +73,4 @@ const initFilters = (data, renderCallback) => {
   filterChangeHandler(debouncedRender);
 };
 
-export { initFilters, applyFilter, FilterType };
+export { initFilters };

@@ -114,7 +114,8 @@ const onScaleBiggerClick = () => {
 // Функции для эффектов
 const onSliderUpdate = () => {
   const sliderValue = effectLevelSlider.noUiSlider.get();
-  effectLevelValue.value = sliderValue;
+
+  effectLevelValue.value = parseFloat(sliderValue).toString();
 
   if (currentEffect !== 'none') {
     const {filter, unit} = EFFECTS[currentEffect];
