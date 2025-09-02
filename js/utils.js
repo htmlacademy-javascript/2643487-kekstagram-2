@@ -45,6 +45,15 @@ const showMessage = (template, isDataError = false) => {
   }
 };
 
+// Устранение дребезга
+const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
 const showSuccess = () => showMessage(successTemplate);
 const showError = () => showMessage(errorTemplate);
 const showDataError = (errorText) => {
@@ -55,4 +64,4 @@ const showDataError = (errorText) => {
   showMessage(message, true);
 };
 
-export { showSuccess, showError, showDataError };
+export { showSuccess, showError, showDataError, debounce };

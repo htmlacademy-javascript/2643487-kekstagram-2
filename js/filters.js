@@ -1,10 +1,12 @@
+import { debounce } from './utils';
+
 const RANDOM_PHOTOS_COUNT = 10;
 const RENDER_DELAY = 500;
 
 const FilterType = {
   DEFAULT: 'default',
   RANDOM: 'random',
-  DISCUSSED: 'discussed'
+  DISCUSSED: 'discussed',
 };
 
 const filtersContainer = document.querySelector('.img-filters');
@@ -34,17 +36,8 @@ const applyFilter = (filterType, photos) => {
   }
 };
 
-// Устранение дребезга
-const debounce = (callback, timeoutDelay) => {
-  let timeoutId;
-  return (...rest) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
-  };
-};
-
 // Обработчик изменения фильтра
-const filterChangeHandler = (cb) => {
+const attachFilterEvent = (cb) => {
   filtersForm.addEventListener('click', (evt) => {
     if (!evt.target.classList.contains('img-filters__button')) {
       return;
@@ -70,7 +63,7 @@ const initFilters = (data, renderCallback) => {
   filtersContainer.classList.remove('img-filters--inactive');
 
   const debouncedRender = debounce(renderCallback, RENDER_DELAY);
-  filterChangeHandler(debouncedRender);
+  attachFilterEvent(debouncedRender);
 };
 
 export { initFilters };

@@ -7,7 +7,7 @@ const VALID_IMAGE_TYPES = [
   'image/jpeg',
   'image/png',
   'image/gif',
-  'image/webp'
+  'image/webp',
 ];
 
 const body = document.body;
@@ -64,7 +64,6 @@ const onError = (error) => {
 const formSubmitHandler = async (evt) => {
   evt.preventDefault();
 
-  // Исправленная проверка валидации
   if (!formValidator.validate()) {
     return;
   }
@@ -83,7 +82,6 @@ const initImageUploadForm = () => {
 
   uploadForm.addEventListener('submit', formSubmitHandler);
   uploadInput.addEventListener('change', () => {
-
     uploadInput.blur();
     const file = uploadInput.files[0];
 
