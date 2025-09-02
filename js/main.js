@@ -5,10 +5,10 @@ import { showDataError } from './utils.js';
 import { initFilters } from './filters.js';
 
 let photosData = [];
+const gallery = document.querySelector('.pictures');
 
 // Функция для отрисовки отфильтрованных фотографий
 const renderFilteredPhotos = (filteredPhotos) => {
-  const gallery = document.querySelector('.pictures');
   const existingPictures = gallery.querySelectorAll('.picture');
 
   // Удаляем предыдущие фотографии

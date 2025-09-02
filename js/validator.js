@@ -20,7 +20,7 @@ const parseHashtags = (input) => {
 };
 
 const isValidTag = (tag) => {
-  if ((tag === '#') || (tag.length > ValidationRules.HASHTAG_MAX_LENGTH)) {
+  if (tag === '#' || tag.length > ValidationRules.HASHTAG_MAX_LENGTH) {
     return false;
   }
   return ValidationRules.HASHTAG_PATTERN.test(tag);
@@ -72,8 +72,7 @@ const getTagValidationError = (inputValue) => {
 
 const validateCommentText = (text) => text.length <= ValidationRules.COMMENT_MAX_LENGTH;
 
-const getCommentError = (text) =>
-  !validateCommentText(text) ? ErrorMessages.COMMENT_TOO_LONG : '';
+const getCommentError = (text) => (!validateCommentText(text) ? ErrorMessages.COMMENT_TOO_LONG : '');
 
 // Функция для добавления валидаторов
 const addFormValidator = (validator, element, validationFn, errorFn) => {

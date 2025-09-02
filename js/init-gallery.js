@@ -2,8 +2,9 @@ import { renderThumbnails } from './render-thumbnails.js';
 import { openFullsizeViewer } from './open-fullsize-viewer.js';
 
 const picturesContainer = document.querySelector('.pictures');
+let photos = [];
 
-const onThumbnailClick = (evt, photosData) => {
+const onThumbnailClick = (evt) => {
   const thumbnail = evt.target.closest('[data-id]');
   if (!thumbnail) {
     return;
@@ -11,27 +12,19 @@ const onThumbnailClick = (evt, photosData) => {
 
   evt.preventDefault();
   const photoId = parseInt(thumbnail.dataset.id, 10);
-  const photoData = photosData.find((item) => item.id === photoId);
+  const photoData = photos.find((item) => item.id === photoId);
 
   if (photoData) {
     openFullsizeViewer(photoData);
   }
 };
 
+const clickHandler = (evt) => onThumbnailClick(evt);
+picturesContainer.addEventListener('click', clickHandler);
+
 const initGallery = (photosData) => {
-  renderThumbnails(photosData);
-
-  // Удаляем старый обработчик, если он есть
-  const oldHandler = picturesContainer.onclick;
-  if (oldHandler) {
-    picturesContainer.removeEventListener('click', oldHandler);
-  }
-
-  // Добавляем новый обработчик
-  const clickHandler = (evt) => onThumbnailClick(evt, photosData);
-  picturesContainer.addEventListener('click', clickHandler);
-  picturesContainer.onclick = clickHandler;
+  photos = photosData;
+  renderThumbnails(photos);
 };
 
 export { initGallery };
-
