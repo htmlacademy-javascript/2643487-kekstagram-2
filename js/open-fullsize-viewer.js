@@ -1,4 +1,4 @@
-const COMMENTS_PER_LOAD = 5; //Количество комментариев для одной загрузки
+const COMMENTS_PER_LOAD = 5; // Количество комментариев для одной загрузки
 
 const body = document.body;
 const bigPictureSection = document.querySelector('.big-picture');
@@ -12,8 +12,8 @@ const commentsLoader = bigPictureSection.querySelector('.comments-loader');
 const socialCaption = bigPictureSection.querySelector('.social__caption');
 const commentsList = bigPictureSection.querySelector('.social__comments');
 
-let currentComments = []; //Хранит все комментарии текущего фото
-let displayedCommentsCount = 0; //Cчетчик показанных комментариев
+let currentComments = []; // Хранит все комментарии текущего фото
+let displayedCommentsCount = 0; // Cчетчик показанных комментариев
 
 const createComment = ({ avatar, name, message }) => {
   const comment = document.createElement('li');

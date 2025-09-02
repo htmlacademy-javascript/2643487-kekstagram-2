@@ -135,7 +135,7 @@ const updateEffect = () => {
 };
 
 const onEffectChange = () => {
-  currentEffect = form['effect'].value;
+  currentEffect = form.effect.value;
   updateEffect();
 };
 
@@ -164,7 +164,6 @@ const resetImageEditor = () => {
 
 // Инициализация всего модуля
 const initImageEditor = () => {
-
   // Масштабирование
   updateScale(DEFAULT_SCALE);
   scaleControlSmaller.addEventListener('click', onScaleSmallerClick);
