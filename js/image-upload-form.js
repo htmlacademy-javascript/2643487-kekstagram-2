@@ -1,7 +1,7 @@
 import { setupFormValidation } from './validator.js';
 import { sendData } from './api.js';
 import { initImageEditor, resetImageEditor } from './image-editor.js';
-import { showSuccess, showError, showDataError } from './utils.js';
+import { showSuccess, showError, showDataError, isEscapeKey } from './utils.js';
 
 const VALID_IMAGE_TYPES = [
   'image/jpeg',
@@ -25,7 +25,7 @@ const formValidator = setupFormValidation(uploadForm);
 const isImageFile = (file) => file && VALID_IMAGE_TYPES.includes(file.type);
 
 const uploadFormKeyDownHandler = (evt) => {
-  if (evt.key === 'Escape' && !evt.target.classList.contains('text__hashtags') && !evt.target.classList.contains('text__description') && !document.body.contains(body.querySelector('.error'))) {
+  if (isEscapeKey(evt) && !evt.target.classList.contains('text__hashtags') && !evt.target.classList.contains('text__description') && !document.body.contains(body.querySelector('.error'))) {
     evt.preventDefault();
     closeForm();
   }

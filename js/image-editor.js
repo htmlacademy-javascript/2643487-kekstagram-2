@@ -3,6 +3,7 @@ const SCALE_STEP = 25;
 const MIN_SCALE = 25;
 const MAX_SCALE = 100;
 const DEFAULT_SCALE = 100;
+const SCALE_DIVISOR = 100;
 
 // Константы для эффектов
 const EFFECTS = {
@@ -98,15 +99,15 @@ let currentEffect = 'none';
 const updateScale = (value) => {
   currentScale = value;
   scaleControlValue.value = `${value}%`;
-  imagePreview.style.transform = `scale(${value / 100})`;
+  imagePreview.style.transform = `scale(${value / SCALE_DIVISOR})`;
 };
 
-const onScaleSmallerClick = () => {
+const scaleSmallerClickHandler = () => {
   const newValue = Math.max(currentScale - SCALE_STEP, MIN_SCALE);
   updateScale(newValue);
 };
 
-const onScaleBiggerClick = () => {
+const scaleBiggerClickHandler = () => {
   const newValue = Math.min(currentScale + SCALE_STEP, MAX_SCALE);
   updateScale(newValue);
 };
@@ -134,7 +135,7 @@ const updateEffect = () => {
   }
 };
 
-const onEffectChange = () => {
+const effectChangeHandler = () => {
   currentEffect = form.effect.value;
   updateEffect();
 };
@@ -166,12 +167,12 @@ const resetImageEditor = () => {
 const initImageEditor = () => {
   // Масштабирование
   updateScale(DEFAULT_SCALE);
-  scaleControlSmaller.addEventListener('click', onScaleSmallerClick);
-  scaleControlBigger.addEventListener('click', onScaleBiggerClick);
+  scaleControlSmaller.addEventListener('click', scaleSmallerClickHandler);
+  scaleControlBigger.addEventListener('click', scaleBiggerClickHandler);
 
   // Эффекты
   initEffectSlider();
-  effectsList.addEventListener('change', onEffectChange);
+  effectsList.addEventListener('change', effectChangeHandler);
   effectLevelContainer.classList.add('hidden');
 };
 
