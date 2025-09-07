@@ -3,6 +3,7 @@ const SCALE_STEP = 25;
 const MIN_SCALE = 25;
 const MAX_SCALE = 100;
 const DEFAULT_SCALE = 100;
+const SCALE_DIVISOR = 100;
 
 // Константы для эффектов
 const EFFECTS = {
@@ -98,7 +99,7 @@ let currentEffect = 'none';
 const updateScale = (value) => {
   currentScale = value;
   scaleControlValue.value = `${value}%`;
-  imagePreview.style.transform = `scale(${value / 100})`;
+  imagePreview.style.transform = `scale(${value / SCALE_DIVISOR})`;
 };
 
 const scaleSmallerClickHandler = () => {
