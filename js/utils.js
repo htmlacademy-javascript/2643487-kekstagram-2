@@ -5,6 +5,8 @@ const successTemplate = document.querySelector('#success').content.querySelector
 const errorTemplate = document.querySelector('#error').content.querySelector('.error');
 const dataErrorTemplate = document.querySelector('#data-error').content.querySelector('.data-error');
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
 const showMessage = (template, isDataError = false) => {
   const message = template.cloneNode(true);
   body.appendChild(message);
@@ -16,7 +18,7 @@ const showMessage = (template, isDataError = false) => {
   };
 
   function documentKeyDownHandler(evt) {
-    if (evt.key === 'Escape' && !evt.target.closest('.success__inner') && !evt.target.closest('.error__inner')) {
+    if (isEscapeKey(evt) && !evt.target.closest('.success__inner') && !evt.target.closest('.error__inner')) {
       evt.preventDefault();
       removeMessage();
     }
@@ -64,4 +66,4 @@ const showDataError = (errorText) => {
   showMessage(message, true);
 };
 
-export { showSuccess, showError, showDataError, debounce };
+export { showSuccess, showError, showDataError, debounce, isEscapeKey };

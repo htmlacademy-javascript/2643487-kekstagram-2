@@ -1,3 +1,5 @@
+import { isEscapeKey } from './utils.js';
+
 const COMMENTS_PER_LOAD = 5; // Количество комментариев для одной загрузки
 
 const body = document.body;
@@ -96,7 +98,7 @@ function closeButtonClickHandler() {
 }
 
 function documentKeyDownHandler(evt) {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     closeFullsizeViewer();
   }
 }
