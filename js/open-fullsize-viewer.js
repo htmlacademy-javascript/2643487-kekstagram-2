@@ -15,14 +15,23 @@ const commentsList = bigPictureSection.querySelector('.social__comments');
 let currentComments = []; // Хранит все комментарии текущего фото
 let displayedCommentsCount = 0; // Cчетчик показанных комментариев
 
-const createComment = ({ avatar, name, message }) => {
-  const comment = document.createElement('li');
-  comment.classList.add('social__comment');
+const commentTemplate = document.createElement('template');
+commentTemplate.innerHTML = `
+  <li class="social__comment">
+    <img class="social__picture" src="" alt="" width="35" height="35">
+    <p class="social__text"></p>
+  </li>
+`;
 
-  comment.innerHTML = `
-    <img class="social__picture" src="${avatar}" alt="${name}" width="35" height="35">
-    <p class="social__text">${message}</p>
-  `;
+const createComment = ({ avatar, name, message }) => {
+  const comment = commentTemplate.content.firstElementChild.cloneNode(true);
+
+  const img = comment.querySelector('.social__picture');
+  const text = comment.querySelector('.social__text');
+
+  img.src = avatar;
+  img.alt = name;
+  text.textContent = message;
 
   return comment;
 };
